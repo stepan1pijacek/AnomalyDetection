@@ -64,6 +64,7 @@ def post_anomaly_detection():
     anomaly_model.data_x = axis_x_norm
     anomaly_model.data_y_orig = data_test_norm
     anomaly_model.anomaly_indices = anomaly_indices
+    anomaly_model.reconstructed_data = reconstructed_test_data
 
     status = 'DONE'
 

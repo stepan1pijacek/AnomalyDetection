@@ -19,5 +19,6 @@ class JSONDecoder(json.JSONDecoder):
         SpectralAnomalyModel.data_x = np.asarray(d['data_x'])
         SpectralAnomalyModel.data_y_orig = np.asarray(d['data_y'])
         SpectralAnomalyModel.anomaly_indices = np.asarray([float(i) for i in d['anomaly_indices']])
+        SpectralAnomalyModel.reconstructed_data = np.asarray([float(i) for i in d['reconstructed_data']])
 
         return SpectralAnomalyModel

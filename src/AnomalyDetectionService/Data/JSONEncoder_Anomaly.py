@@ -14,7 +14,8 @@ class JSONEncoder(json.JSONEncoder):
                 'concentration': obj.concentration,
                 'data_x': obj.data_x.tolist(),
                 'data_y': obj.data_y_orig,
-                'anomaly_indices': obj.anomaly_indices
+                'anomaly_indices': obj.anomaly_indices,
+                'reconstructed_data': obj.reconstructed_data
             }
         elif isinstance(obj, np.ndarray):
             return obj.tolist()

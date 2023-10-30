@@ -10,3 +10,4 @@ class SpectralAnomalyModel:
         self.data_x = np.array([])
         self.data_y_orig = np.array([])
         self.anomaly_indices = np.array([])
+        self.reconstructed_data = np.array([])
