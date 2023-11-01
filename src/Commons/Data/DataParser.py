@@ -34,7 +34,7 @@ class DataParser :
                 data_model.concentration = 0
                 data_model.iteration = None
 
-            with open(self.folder_path+'/'+file, 'r') as f:
+            with open(self.folder_path+'\\'+file, 'r') as f:
                 lines = f.readlines()
 
                 for line in lines:

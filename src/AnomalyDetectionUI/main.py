@@ -21,11 +21,10 @@ def process_files(file_paths, folder_path):
 def api_call_anomaly_detection(data_to_process):
     json_string = json.dumps(data_to_process, cls=JSONEncoder)
 
-    output = requests.post('http://127.0.0.1:8000/AnomalyDetection', json=json_string)
+    output = requests.post('http://127.0.0.1:5000/AnomalyDetection', json=json_string)
     output_formatted = json.loads(output.text, cls=JSONDecoder)
 
     return output_formatted
-
 
 
 def process_data(data_list):
@@ -44,19 +43,19 @@ def normalize_data(data_list, desired_length):
 
     return process_data_list
 
+
 def main():
     processed_anomalies = [SpectralAnomalyModel()]
     control_anomalies = SpectralAnomalyModel()
 
     # Process anomalous data
-    anomalous_data = process_files(['CCM8261_AMP 0.5_50x_15s.txt',
-                   'CCM8261_AMP 0.5_50x_15sa.txt',
-                   'CCM8261_AMP 0.5_50x_15s.txt'],
-                  '/Users/stepanpijacek/Documents/GitHub/FrequencyAnalysisDS/DemoTestData')
+    # C:\Users\stepan.pijacek\Documents\GitHub\AnomalyDetection\DemoTestData\CCM8261_AMP 0.5_50x_15s.txt
+    anomalous_data = process_files(['CCM8261_FLU 1_50x_15sg.txt'],
+                                   'C:\\Users\\stepan.pijacek\\Documents\\GitHub\\AnomalyDetection\\DemoTestData')
 
     # Process control data
-    control_data = process_files(['CCM8261_control_50x_15s.txt'],
-                                 '/Users/stepanpijacek/Documents/GitHub/FrequencyAnalysisDS/DemoTestData')
+    control_data = process_files(['CCM8261_FLU 1_50x_15sg.txt'],
+                                 'C:\\Users\\stepan.pijacek\\Documents\\GitHub\\AnomalyDetection\\DemoTestData')
 
     # Clear up the data
     anomalous_data = process_data(anomalous_data)
@@ -69,28 +68,39 @@ def main():
         model = json.loads(json_string_processed, cls=JSONDecoder)
         processed_anomalies.append(model)
 
+    processed_anomalies[0].data_x[0] = np.reshape(processed_anomalies[0].data_x[0], [1, 1016])
+
     print(processed_anomalies)
     # Show control data
-    plt.figure(figsize=(20, 10))
-    plt.plot(control_data[0].data_y, label='original')
-    plt.title('Control Data')
+    plt.figure(figsize=(30, 20))
+    plt.subplot(4, 1, 1)
+    plt.plot(processed_anomalies[0].data_y_orig[0], label='original')
+    plt.title('Original Data')
     plt.xlabel('x')
     plt.ylabel('y')
-    plt.legend()
 
-    # Show anomalous data
-    plt.figure(figsize=(20, 10))
+    plt.subplot(4, 1, 2)
+    plt.plot(processed_anomalies[0].reconstructed_data[0], label="Reconstructed data from AnomalyDetection Engine")
+    plt.title("Reconstructed data")
+
+    difference = np.subtract(processed_anomalies[0].data_y_orig[0], processed_anomalies[0].reconstructed_data[0])
+    plt.subplot(4, 1, 3)
+    plt.plot(difference, label="Difference between original and reconstructed data")
+    plt.title("Difference")
+    plt.legend()
 
     for anomaly in processed_anomalies:
         # Plot the original data
         for i in range(1):
-            plt.plot(np.reshape(anomaly.data_x, [1, 1016])[i],
+            plt.subplot(4, 1, 4)
+            plt.plot(anomaly.data_x[0],
                      anomaly.data_y_orig[i],
                      label=f'Spectrum {anomaly.ID, anomaly.agent, anomaly.concentration, anomaly.iteration}', alpha=0.5,
                      color='blue')
 
         if len(anomaly.anomaly_indices) > 0:
-            plt.scatter([np.reshape(anomaly.data_x, [1, 1016])[0][int(idx)] for idx in anomaly.anomaly_indices],
+            plt.subplot(4, 1, 4)
+            plt.scatter([anomaly.data_x[0][int(idx)] for idx in anomaly.anomaly_indices],
                         [anomaly.data_y_orig[0][int(idx)] for idx in anomaly.anomaly_indices],
                         marker='+', s=50, c="red", label='anomaly')
 

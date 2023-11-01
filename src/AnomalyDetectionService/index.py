@@ -16,7 +16,7 @@ app = Flask(__name__)
 dn = dn()
 
 # Load the trained AutoEncoder model
-engine = Engine('/Users/stepanpijacek/Documents/GitHub/FrequencyAnalysisDS/Output/AnomalyDetection_weights.best.hdf5')
+engine = Engine('C:\\Users\\stepan.pijacek\\Documents\\GitHub\\AnomalyDetection\\Output\\AnomalyDetection_weights.best.hdf5')
 autoencoder = engine.get_engine()
 
 # Set the status to IDLE initially

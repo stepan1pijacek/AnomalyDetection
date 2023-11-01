@@ -42,4 +42,4 @@ class GlobalSettings :
     ENCODER_ACTIVATION = "relu"
     DECODER_ACTIVATION = "sigmoid"
     LOSS = "mean_squared_error"
-    WEIGHT_PATH = "/Users/stepanpijacek/Documents/GitHub/FrequencyAnalysisDS/Output/{}_weights.best.hdf5".format('AnomalyDetection')
+    WEIGHT_PATH = "\\Users\\stepanpijacek\\Documents\\GitHub\\FrequencyAnalysisDS\\Output\\{}_weights.best.hdf5".format('AnomalyDetection')
