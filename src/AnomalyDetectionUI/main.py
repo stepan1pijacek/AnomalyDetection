@@ -21,7 +21,7 @@ def process_files(file_paths, folder_path):
 def api_call_anomaly_detection(data_to_process):
     json_string = json.dumps(data_to_process, cls=JSONEncoder)
 
-    output = requests.post('http://127.0.0.1:5000/AnomalyDetection', json=json_string)
+    output = requests.post('http://127.0.0.1:6000/AnomalyDetection', json=json_string)
     output_formatted = json.loads(output.text, cls=JSONDecoder)
 
     return output_formatted
@@ -50,7 +50,7 @@ def main():
 
     # Process anomalous data
     # C:\Users\stepan.pijacek\Documents\GitHub\AnomalyDetection\DemoTestData\CCM8261_AMP 0.5_50x_15s.txt
-    anomalous_data = process_files(['CCM8261_FLU 1_50x_15sg.txt'],
+    anomalous_data = process_files(['Candida tropicalis_FS236_50x_10se.txt'],
                                    'C:\\Users\\stepan.pijacek\\Documents\\GitHub\\AnomalyDetection\\DemoTestData')
 
     # Process control data
@@ -89,20 +89,18 @@ def main():
     plt.title("Difference")
     plt.legend()
 
-    for anomaly in processed_anomalies:
-        # Plot the original data
-        for i in range(1):
-            plt.subplot(4, 1, 4)
-            plt.plot(anomaly.data_x[0],
-                     anomaly.data_y_orig[i],
-                     label=f'Spectrum {anomaly.ID, anomaly.agent, anomaly.concentration, anomaly.iteration}', alpha=0.5,
-                     color='blue')
+    plt.subplot(4, 1, 4)
+    plt.plot(processed_anomalies[0].data_x[0],
+             processed_anomalies[0].data_y_orig[0],
+             alpha=0.5,
+             label=f'Spectrum {processed_anomalies[0].ID, processed_anomalies[0].agent, processed_anomalies[0].concentration, processed_anomalies[0].iteration}',
+             color='blue')
 
-        if len(anomaly.anomaly_indices) > 0:
-            plt.subplot(4, 1, 4)
-            plt.scatter([anomaly.data_x[0][int(idx)] for idx in anomaly.anomaly_indices],
-                        [anomaly.data_y_orig[0][int(idx)] for idx in anomaly.anomaly_indices],
-                        marker='+', s=50, c="red", label='anomaly')
+    if len(processed_anomalies[0].anomaly_indices) > 0:
+        plt.subplot(4, 1, 4)
+        plt.scatter([processed_anomalies[0].data_x[0][int(idx)] for idx in processed_anomalies[0].anomaly_indices],
+                    [processed_anomalies[0].data_y_orig[0][int(idx)] for idx in processed_anomalies[0].anomaly_indices],
+                    marker='+', s=50, c="red")
 
     plt.title('Anomaly Detection in Raman Spectroscopy Data')
     plt.legend()
